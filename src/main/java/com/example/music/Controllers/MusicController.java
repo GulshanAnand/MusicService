@@ -23,7 +23,6 @@ import java.util.List;
 //@CrossOrigin(origins = "http://192.168.56.1:3001")
 @RestController
 @RequestMapping(path = "/music")
-@CrossOrigin(origins = "http://192.168.0.123:3001")
 public class MusicController {
 
     @Autowired
