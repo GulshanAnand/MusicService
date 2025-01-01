@@ -1,7 +1,7 @@
 package com.example.music.Controllers;
 
 import com.example.music.Objects.Track;
-import com.example.music.Objects.YoutubeVideo;
+import com.example.music.entity.YoutubeVideo;
 import com.example.music.Services.TrackService;
 import com.example.music.Services.YoutubeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,6 @@ import org.springframework.http.HttpHeaders;
 //import org.springframework.web.bind.annotation.CrossOrigin;
 
 
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -65,15 +63,6 @@ public class MusicController {
         return ResponseEntity.status(HttpStatus.OK).body(videos);
     }
 
-//    @PostMapping("/download")
-//    public ResponseEntity<Boolean> downloadTrackOriginal(@RequestBody String trackName){
-//        youtubeService.downloadAudio(trackName);
-////        return ResponseEntity.ok()
-////                .contentType(MediaType.valueOf("audio/mpeg"))
-////                .body(Boolean.TRUE);
-//        return ResponseEntity.status(HttpStatus.OK).body(Boolean.TRUE);
-//    }
-
     @PostMapping("/download")
     public ResponseEntity<InputStreamResource> downloadTrackOriginal(@RequestBody String trackName){
         InputStreamResource audioStream = youtubeService.streamAudio(trackName);
@@ -83,4 +72,16 @@ public class MusicController {
                 .body(audioStream);
 
     }
+
+    @PostMapping("/playlist")
+    public ResponseEntity<Boolean> addToPlaylist(@RequestBody YoutubeVideo youtubeVideo){
+        Boolean isSaved = youtubeService.saveToPlaylist(youtubeVideo);
+        if(isSaved){
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(true);
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(false);
+    }
+
 }

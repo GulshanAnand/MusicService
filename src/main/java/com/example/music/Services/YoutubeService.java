@@ -1,6 +1,6 @@
 package com.example.music.Services;
 
-import com.example.music.Objects.YoutubeVideo;
+import com.example.music.entity.YoutubeVideo;
 import org.springframework.core.io.InputStreamResource;
 
 import java.util.List;
@@ -8,7 +8,8 @@ import java.util.List;
 public interface YoutubeService {
 
     public List<YoutubeVideo> fetchVideos(String keyword) ;
-    public void downloadAudio(String videoUrl) ;
+//    public void downloadAudio(String videoUrl) ;
     public InputStreamResource streamAudio(String videoUrl) ;
 
-    }
+    Boolean saveToPlaylist(YoutubeVideo youtubeVideo);
+}

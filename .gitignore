@@ -38,3 +38,4 @@ build/
 .gitattributes
 files/
 src/main/resources/secrets.properties
+src/main/resources/application-win.properties
