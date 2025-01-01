@@ -19,6 +19,9 @@ public class MusicApplication {
 //mvn -s /Users/s0a0f3m/cpp/musicApp/minimal_settings.xml clean install
 //mvn -s /Users/s0a0f3m/cpp/musicApp/minimal_settings.xml spring-boot:run
 
+// DNS flush
+//sudo systemctl restart NetworkManager
+
 
 //eval "$(ssh-agent -s)"
 //ssh-add --apple-use-keychain ~/.ssh/id_ed25519_personal
