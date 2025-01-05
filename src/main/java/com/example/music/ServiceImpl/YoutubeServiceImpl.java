@@ -111,31 +111,4 @@ public class YoutubeServiceImpl implements YoutubeService {
         }
     }
 
-    @Override
-    public Boolean saveToPlaylist(YoutubeVideo youtubeVideo) {
-        try{
-            PlaylistEntry playlistEntry = new PlaylistEntry();
-            YoutubeVideo existingYoutubeVideo = youtubeVideoRepository.findByVideoUrl(youtubeVideo.getVideoUrl());
-            YoutubeVideo savedYoutubeVideo = Objects.isNull(existingYoutubeVideo)?youtubeVideoRepository.save(youtubeVideo):existingYoutubeVideo;
-            playlistEntry.setYoutubeVideo(savedYoutubeVideo);
-            User user = UserContextHolder.getCurrentUser();
-            playlistEntry.setUser(user);
-            PlaylistEntry existingPlaylistEntry = playlistEntryRepository.findByUserAndVideoUrl(user, savedYoutubeVideo);
-            if(!Objects.isNull(existingPlaylistEntry)) return false;
-            playlistEntryRepository.save(playlistEntry);
-            return true;
-        }
-        catch (Exception e){
-            return null;
-        }
-    }
-
-    @Override
-    public List<YoutubeVideo> getPlaylist() {
-        User user = UserContextHolder.getCurrentUser();
-//        return playlistEntryRepository.findAllByUser(user);
-        List<YoutubeVideo> playlistEntries = playlistEntryRepository.findAllByUser(user);
-        System.out.println(playlistEntries);
-        return playlistEntries;
-    }
 }

@@ -1,6 +1,7 @@
 package com.example.music.Controllers;
 
 import com.example.music.Objects.Track;
+import com.example.music.Services.PlaylistService;
 import com.example.music.entity.PlaylistEntry;
 import com.example.music.entity.YoutubeVideo;
 import com.example.music.Services.TrackService;
@@ -30,9 +31,13 @@ public class MusicController {
     @Autowired
     private final YoutubeService youtubeService;
 
-    public MusicController(TrackService trackService, YoutubeService youtubeService) {
+    @Autowired
+    private final PlaylistService playlistService;
+
+    public MusicController(TrackService trackService, YoutubeService youtubeService, PlaylistService playlistService) {
         this.trackService = trackService;
         this.youtubeService = youtubeService;
+        this.playlistService = playlistService;
     }
 
     @GetMapping("/")
@@ -77,7 +82,7 @@ public class MusicController {
     @PostMapping("/playlist")
     public ResponseEntity<Boolean> addToPlaylist(@RequestBody YoutubeVideo youtubeVideo){
         System.out.println(youtubeVideo.toString());
-        Boolean isSaved = youtubeService.saveToPlaylist(youtubeVideo);
+        Boolean isSaved = playlistService.saveToPlaylist(youtubeVideo);
         if(Objects.isNull(isSaved)){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(false);
@@ -94,7 +99,13 @@ public class MusicController {
 
     @GetMapping("/playlist")
     public ResponseEntity<List<YoutubeVideo>> getPlaylist(){
-        return ResponseEntity.status(HttpStatus.OK).body(youtubeService.getPlaylist());
+        return ResponseEntity.status(HttpStatus.OK).body(playlistService.getPlaylist());
+    }
+
+    @DeleteMapping("/playlist")
+    public ResponseEntity<Boolean> RemoveFromPlaylist(@RequestBody YoutubeVideo youtubeVideo){
+        playlistService.deleteTrack(youtubeVideo);
+        return ResponseEntity.status(HttpStatus.OK).body(true);
     }
 
 }

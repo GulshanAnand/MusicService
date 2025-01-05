@@ -11,7 +11,4 @@ public interface YoutubeService {
 //    public void downloadAudio(String videoUrl) ;
     public InputStreamResource streamAudio(String videoUrl) ;
 
-    Boolean saveToPlaylist(YoutubeVideo youtubeVideo);
-
-    List<YoutubeVideo> getPlaylist();
 }

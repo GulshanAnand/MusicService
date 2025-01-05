@@ -22,7 +22,6 @@ public class YoutubeVideo {
     @Column(name = "video_url")
     private String videoUrl;
 
-    @NonNull
     private String title;
 
 }
