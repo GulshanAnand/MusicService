@@ -1,6 +1,7 @@
 package com.example.music.Controllers;
 
 import com.example.music.Objects.Track;
+import com.example.music.entity.PlaylistEntry;
 import com.example.music.entity.YoutubeVideo;
 import com.example.music.Services.TrackService;
 import com.example.music.Services.YoutubeService;
@@ -89,6 +90,11 @@ public class MusicController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(false);
         }
+    }
+
+    @GetMapping("/playlist")
+    public ResponseEntity<List<YoutubeVideo>> getPlaylist(){
+        return ResponseEntity.status(HttpStatus.OK).body(youtubeService.getPlaylist());
     }
 
 }

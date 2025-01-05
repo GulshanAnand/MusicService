@@ -129,4 +129,13 @@ public class YoutubeServiceImpl implements YoutubeService {
             return null;
         }
     }
+
+    @Override
+    public List<YoutubeVideo> getPlaylist() {
+        User user = UserContextHolder.getCurrentUser();
+//        return playlistEntryRepository.findAllByUser(user);
+        List<YoutubeVideo> playlistEntries = playlistEntryRepository.findAllByUser(user);
+        System.out.println(playlistEntries);
+        return playlistEntries;
+    }
 }

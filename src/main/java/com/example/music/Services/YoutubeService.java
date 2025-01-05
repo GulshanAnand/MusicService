@@ -2,7 +2,6 @@ package com.example.music.Services;
 
 import com.example.music.entity.YoutubeVideo;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -13,4 +12,6 @@ public interface YoutubeService {
     public InputStreamResource streamAudio(String videoUrl) ;
 
     Boolean saveToPlaylist(YoutubeVideo youtubeVideo);
+
+    List<YoutubeVideo> getPlaylist();
 }
