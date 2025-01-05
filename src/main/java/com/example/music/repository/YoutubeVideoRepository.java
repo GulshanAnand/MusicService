@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface YoutubeVideoRepository extends JpaRepository<YoutubeVideo, UUID> {
+    YoutubeVideo findByVideoUrl(String videoUrl);
 }

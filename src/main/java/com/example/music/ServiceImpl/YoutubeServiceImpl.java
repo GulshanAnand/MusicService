@@ -9,6 +9,7 @@ import com.example.music.repository.PlaylistEntryRepository;
 import com.example.music.repository.YoutubeVideoRepository;
 import com.example.music.utils.UserContextHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -112,15 +113,20 @@ public class YoutubeServiceImpl implements YoutubeService {
 
     @Override
     public Boolean saveToPlaylist(YoutubeVideo youtubeVideo) {
-        PlaylistEntry playlistEntry = new PlaylistEntry();
-        YoutubeVideo savedYoutubeVideo = youtubeVideoRepository.save(youtubeVideo);
-        playlistEntry.setYoutubeVideo(savedYoutubeVideo);
-        User user = UserContextHolder.getCurrentUser();
-        if(Objects.isNull(user)){
-            return false;
+        try{
+            PlaylistEntry playlistEntry = new PlaylistEntry();
+            YoutubeVideo existingYoutubeVideo = youtubeVideoRepository.findByVideoUrl(youtubeVideo.getVideoUrl());
+            YoutubeVideo savedYoutubeVideo = Objects.isNull(existingYoutubeVideo)?youtubeVideoRepository.save(youtubeVideo):existingYoutubeVideo;
+            playlistEntry.setYoutubeVideo(savedYoutubeVideo);
+            User user = UserContextHolder.getCurrentUser();
+            playlistEntry.setUser(user);
+            PlaylistEntry existingPlaylistEntry = playlistEntryRepository.findByUserAndVideoUrl(user, savedYoutubeVideo);
+            if(!Objects.isNull(existingPlaylistEntry)) return false;
+            playlistEntryRepository.save(playlistEntry);
+            return true;
         }
-        playlistEntry.setUser(user);
-        PlaylistEntry savedEntry = playlistEntryRepository.save(playlistEntry);
-        return !(Objects.isNull(savedEntry));
+        catch (Exception e){
+            return null;
+        }
     }
 }

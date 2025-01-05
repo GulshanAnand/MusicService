@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 
-import java.util.UUID;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,14 +13,16 @@ import java.util.UUID;
 @Table(name = "video")
 public class YoutubeVideo {
 
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Column(name = "video_id")
+//    private UUID videoId;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "video_id")
-    private UUID videoId;
+    @Column(name = "video_url")
+    private String videoUrl;
 
     @NonNull
     private String title;
 
-    @NonNull
-    private String videoUrl;
 }

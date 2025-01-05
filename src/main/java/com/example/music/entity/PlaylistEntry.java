@@ -24,7 +24,7 @@ public class PlaylistEntry {
     private User user;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "video_id")
+    @JoinColumn(name = "video_url")
     private YoutubeVideo youtubeVideo;
 
 }
