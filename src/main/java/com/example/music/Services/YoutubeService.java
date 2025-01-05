@@ -2,6 +2,7 @@ package com.example.music.Services;
 
 import com.example.music.entity.YoutubeVideo;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

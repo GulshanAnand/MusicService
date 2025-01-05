@@ -6,6 +6,7 @@ import com.example.music.Services.YoutubeService;
 import com.example.music.entity.PlaylistEntry;
 import com.example.music.entity.User;
 import com.example.music.repository.PlaylistEntryRepository;
+import com.example.music.repository.YoutubeVideoRepository;
 import com.example.music.utils.UserContextHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,10 @@ import org.springframework.context.annotation.PropertySource;
 public class YoutubeServiceImpl implements YoutubeService {
 
     @Autowired
-    PlaylistEntryRepository playlistEntryRepository;
+    private PlaylistEntryRepository playlistEntryRepository;
+
+    @Autowired
+    private YoutubeVideoRepository youtubeVideoRepository;
 
     @Value("${youtube.api.key}")
     private String apiKey;
@@ -46,8 +50,6 @@ public class YoutubeServiceImpl implements YoutubeService {
                     "%s?q=%s&part=snippet&type=video&maxResults="+Integer.toString(n)+"&key=%s",
                     apiUrl, encodedKeyword, apiKey
             );
-            System.out.println(apiKey);
-            System.out.println(queryUrl);
             Process process = new ProcessBuilder("curl", "-s", queryUrl).start();
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -68,7 +70,6 @@ public class YoutubeServiceImpl implements YoutubeService {
                 videos.add(video);
 //                downloadAudio(video.getVideoUrl());
             }
-            System.out.println(videos);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,7 +113,8 @@ public class YoutubeServiceImpl implements YoutubeService {
     @Override
     public Boolean saveToPlaylist(YoutubeVideo youtubeVideo) {
         PlaylistEntry playlistEntry = new PlaylistEntry();
-        playlistEntry.setYoutubeVideo(youtubeVideo);
+        YoutubeVideo savedYoutubeVideo = youtubeVideoRepository.save(youtubeVideo);
+        playlistEntry.setYoutubeVideo(savedYoutubeVideo);
         User user = UserContextHolder.getCurrentUser();
         if(Objects.isNull(user)){
             return false;

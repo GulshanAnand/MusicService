@@ -1,6 +1,8 @@
 package com.example.music.Controllers;
 
 import com.example.music.Objects.Track;
+import com.example.music.adapters.YoutubeVideoAdapter;
+import com.example.music.dto.YoutubeVideoDto;
 import com.example.music.entity.YoutubeVideo;
 import com.example.music.Services.TrackService;
 import com.example.music.Services.YoutubeService;
@@ -29,9 +31,13 @@ public class MusicController {
     @Autowired
     private final YoutubeService youtubeService;
 
-    public MusicController(TrackService trackService, YoutubeService youtubeService) {
+    @Autowired
+    private final YoutubeVideoAdapter youtubeVideoAdapter;
+
+    public MusicController(TrackService trackService, YoutubeService youtubeService, YoutubeVideoAdapter youtubeVideoAdapter) {
         this.trackService = trackService;
         this.youtubeService = youtubeService;
+        this.youtubeVideoAdapter = youtubeVideoAdapter;
     }
 
     @GetMapping("/")
@@ -74,7 +80,13 @@ public class MusicController {
     }
 
     @PostMapping("/playlist")
-    public ResponseEntity<Boolean> addToPlaylist(@RequestBody YoutubeVideo youtubeVideo){
+    public ResponseEntity<Boolean> addToPlaylist(@RequestBody YoutubeVideoDto youtubeVideoDto){
+        System.out.println("aaya title - " + youtubeVideoDto.getTitle() + " " + youtubeVideoDto.getVideoUrl());
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println(youtubeVideoDto.toString());
+        YoutubeVideo youtubeVideo = youtubeVideoAdapter.convert(youtubeVideoDto);
         Boolean isSaved = youtubeService.saveToPlaylist(youtubeVideo);
         if(isSaved){
             return ResponseEntity.status(HttpStatus.CREATED)
