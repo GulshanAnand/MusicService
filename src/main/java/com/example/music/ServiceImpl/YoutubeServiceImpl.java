@@ -100,10 +100,17 @@ public class YoutubeServiceImpl implements YoutubeService {
         try {
             String command = String.format("yt-dlp -x --audio-format mp3 -o - %s", videoUrl);
             System.out.println(command);
+            long startTime = System.nanoTime();
             Process process = Runtime.getRuntime().exec(command);
             InputStream audioStream = process.getInputStream();
 
             InputStreamResource resource = new InputStreamResource(audioStream);
+            long endTime = System.nanoTime();
+            long duration = endTime - startTime;  // Calculate the duration
+            // Convert duration from nanoseconds to seconds
+            double durationInSeconds = duration / 1_000_000.0;
+            System.out.println("yt-dlp execution time: " + durationInSeconds + " milliseconds");
+
 
             return resource;
         } catch (IOException ex) {

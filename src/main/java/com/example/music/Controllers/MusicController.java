@@ -71,7 +71,13 @@ public class MusicController {
 
     @PostMapping("/download")
     public ResponseEntity<InputStreamResource> downloadTrackOriginal(@RequestBody String trackName){
+        long startTime = System.nanoTime();
         InputStreamResource audioStream = youtubeService.streamAudio(trackName);
+        long endTime = System.nanoTime();
+        long duration = endTime - startTime;  // Calculate the duration
+            // Convert duration from nanoseconds to seconds
+            double durationInSeconds = duration / 1_000_000.0;
+            System.out.println("total stream execution time: " + durationInSeconds + " milliseconds");
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=audio.mp3")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
