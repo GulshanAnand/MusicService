@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpHeaders;
+import com.example.music.dto.YoutubeVideoDto;
 
 import java.util.List;
 import java.util.Objects;
@@ -41,9 +42,9 @@ public class MusicController {
     }
 
     @PostMapping("/download")
-    public ResponseEntity<InputStreamResource> downloadTrackOriginal(@RequestBody String trackName){
+    public ResponseEntity<InputStreamResource> downloadTrackOriginal(@RequestBody YoutubeVideoDto youtubeVideoDto){
         long startTime = System.nanoTime();
-        InputStreamResource audioStream = youtubeService.streamAudio(trackName);
+        InputStreamResource audioStream = youtubeService.streamAudio(youtubeVideoDto.getVideoUrl(), youtubeVideoDto.getTitle());
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
         double durationInSeconds = duration / 1_000_000.0;

@@ -57,7 +57,7 @@ public class YoutubeServiceImpl implements YoutubeService {
         return videos;
     }
 
-    public InputStreamResource streamAudio(String videoUrl) {
+    public InputStreamResource streamAudio(String videoUrl, String title) {
         try {
             String command = String.format("yt-dlp -x --audio-format mp3 -o - %s", videoUrl);
             System.out.println(command);

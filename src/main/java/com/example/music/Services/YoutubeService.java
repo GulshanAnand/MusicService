@@ -9,6 +9,6 @@ public interface YoutubeService {
 
     public List<YoutubeVideo> fetchVideos(String keyword) ;
 
-    public InputStreamResource streamAudio(String videoUrl) ;
+    public InputStreamResource streamAudio(String videoUrl, String title) ;
 
 }
