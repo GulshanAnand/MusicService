@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface YoutubeVideoRepository extends JpaRepository<YoutubeVideo, UUID> {
+public interface YoutubeVideoRepository extends JpaRepository<YoutubeVideo, String> {
     Optional<YoutubeVideo> findByVideoUrl(String videoUrl);
 
     @Modifying

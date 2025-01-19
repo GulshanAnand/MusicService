@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.example.music.dto.YoutubeVideoDto;
 import com.example.music.repository.YoutubeVideoRepository;
 
+import java.util.Optional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,9 +78,24 @@ public class YoutubeServiceImpl implements YoutubeService {
             double durationInSeconds = duration / 1_000_000.0;
             System.out.println("yt-dlp execution time: " + durationInSeconds + " milliseconds");
 
+            Optional<YoutubeVideo> existingYoutubeVideo = youtubeVideoRepository.findByVideoUrl(videoUrl);
+            if(existingYoutubeVideo.isEmpty()){
+                System.out.println("empty");
+                youtubeVideoRepository.save(YoutubeVideo.builder()
+                        .videoUrl(videoUrl)
+                        .title(title)
+                        .streamCount(1)
+                        .playlistCount(0)
+                        .build());
+            }
+            else{
+                System.out.println("increased");
+                youtubeVideoRepository.incrementStreamCount(videoUrl);
+            }
+
 
             return resource;
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
