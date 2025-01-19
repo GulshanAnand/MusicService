@@ -1,6 +1,6 @@
 package com.example.music.Services;
 
-import com.example.music.Objects.User;
+import com.example.music.entity.User;
 import com.example.music.constants.Role;
 import com.example.music.dto.AuthenticationRequest;
 import com.example.music.dto.AuthenticationResponse;

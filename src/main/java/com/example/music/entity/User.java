@@ -1,4 +1,4 @@
-package com.example.music.Objects;
+package com.example.music.entity;
 
 
 import com.example.music.constants.Role;
@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -22,14 +23,23 @@ import java.util.List;
 @Entity
 @Table(name = "music_user")
 public class User implements UserDetails {
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
-    private Long userId;
+    private UUID userId;
+
+    @Column(nullable = false)
     private String firstname;
+
     private String lastname;
+
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String password;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
