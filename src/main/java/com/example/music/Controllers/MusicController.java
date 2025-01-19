@@ -36,8 +36,8 @@ public class MusicController {
     }
 
     @GetMapping("/search/{trackName}")
-    public ResponseEntity<List<YoutubeVideo>> searchTrack(@PathVariable String trackName){
-        List<YoutubeVideo> videos = youtubeService.fetchVideos(trackName);
+    public ResponseEntity<List<YoutubeVideoDto>> searchTrack(@PathVariable String trackName){
+        List<YoutubeVideoDto> videos = youtubeService.fetchVideos(trackName);
         return ResponseEntity.status(HttpStatus.OK).body(videos);
     }
 
@@ -57,9 +57,9 @@ public class MusicController {
     }
 
     @PostMapping("/playlist")
-    public ResponseEntity<Boolean> addToPlaylist(@RequestBody YoutubeVideo youtubeVideo){
-        System.out.println(youtubeVideo.toString());
-        Boolean isSaved = playlistService.saveToPlaylist(youtubeVideo);
+    public ResponseEntity<Boolean> addToPlaylist(@RequestBody YoutubeVideoDto youtubeVideoDto){
+        System.out.println(youtubeVideoDto.toString());
+        Boolean isSaved = playlistService.saveToPlaylist(youtubeVideoDto);
         if(Objects.isNull(isSaved)){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(false);
@@ -75,13 +75,13 @@ public class MusicController {
     }
 
     @GetMapping("/playlist")
-    public ResponseEntity<List<YoutubeVideo>> getPlaylist(){
+    public ResponseEntity<List<YoutubeVideoDto>> getPlaylist(){
         return ResponseEntity.status(HttpStatus.OK).body(playlistService.getPlaylist());
     }
 
     @DeleteMapping("/playlist")
-    public ResponseEntity<Boolean> RemoveFromPlaylist(@RequestBody YoutubeVideo youtubeVideo){
-        playlistService.deleteTrack(youtubeVideo);
+    public ResponseEntity<Boolean> RemoveFromPlaylist(@RequestBody YoutubeVideoDto youtubeVideoDto){
+        playlistService.removeFromPlaylist(youtubeVideoDto);
         return ResponseEntity.status(HttpStatus.OK).body(true);
     }
 

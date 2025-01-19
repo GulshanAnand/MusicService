@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import com.example.music.entity.YoutubeVideo;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.example.music.dto.YoutubeVideoDto;
+import com.example.music.repository.YoutubeVideoRepository;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,11 +27,14 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:secrets.properties")
 public class YoutubeServiceImpl implements YoutubeService {
 
+    @Autowired
+    private YoutubeVideoRepository youtubeVideoRepository;
+
     @Value("${youtube.api.key}")
     private String apiKey;
-    public List<YoutubeVideo> fetchVideos(String keyword) {
+    public List<YoutubeVideoDto> fetchVideos(String keyword) {
         String apiUrl = "https://www.googleapis.com/youtube/v3/search";
-        List<YoutubeVideo> videos = new ArrayList<>();
+        List<YoutubeVideoDto> videos = new ArrayList<>();
         try {
             String encodedKeyword = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
             int n=10;
@@ -45,10 +51,10 @@ public class YoutubeServiceImpl implements YoutubeService {
             for (Item item : response.getItems()) {
                 String title = item.getSnippet().getTitle();
                 String videoId = item.getId().getVideoId();
-                YoutubeVideo video = new YoutubeVideo();
-                video.setTitle(title);
-                video.setVideoUrl("https://www.youtube.com/watch?v=" + videoId);
-                videos.add(video);
+                videos.add(YoutubeVideoDto.builder()
+                        .title(title)
+                        .videoUrl("https://www.youtube.com/watch?v=" + videoId)
+                        .build());
             }
 
         } catch (Exception e) {

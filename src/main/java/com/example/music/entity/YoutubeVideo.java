@@ -20,4 +20,8 @@ public class YoutubeVideo {
 
     private String title;
 
+    private Integer streamCount;
+
+    private Integer playlistCount;
+
 }

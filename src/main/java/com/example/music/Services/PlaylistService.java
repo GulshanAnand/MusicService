@@ -1,13 +1,14 @@
 package com.example.music.Services;
 
 import com.example.music.entity.YoutubeVideo;
+import com.example.music.dto.YoutubeVideoDto;
 
 import java.util.List;
 
 public interface PlaylistService {
-    Boolean saveToPlaylist(YoutubeVideo youtubeVideo);
+    Boolean saveToPlaylist(YoutubeVideoDto youtubeVideoDto);
 
-    List<YoutubeVideo> getPlaylist();
+    List<YoutubeVideoDto> getPlaylist();
 
-    void deleteTrack(YoutubeVideo youtubeVideo);
+    void removeFromPlaylist(YoutubeVideoDto youtubeVideoDto);
 }
