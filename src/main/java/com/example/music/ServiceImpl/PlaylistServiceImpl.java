@@ -44,7 +44,6 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Override
     public List<YoutubeVideo> getPlaylist() {
         User user = UserContextHolder.getCurrentUser();
-//        return playlistEntryRepository.findAllByUser(user);
         List<YoutubeVideo> playlistEntries = playlistEntryRepository.findAllByUser(user);
         System.out.println(playlistEntries);
         return playlistEntries;
