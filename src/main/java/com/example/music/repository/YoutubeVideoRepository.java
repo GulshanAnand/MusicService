@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface YoutubeVideoRepository extends JpaRepository<YoutubeVideo, UUID> {
+public interface YoutubeVideoRepository extends JpaRepository<YoutubeVideo, String> {
     Optional<YoutubeVideo> findByVideoUrl(String videoUrl);
 
     @Modifying
@@ -34,10 +34,10 @@ public interface YoutubeVideoRepository extends JpaRepository<YoutubeVideo, UUID
     @Query("UPDATE YoutubeVideo yv SET yv.playlistCount = yv.playlistCount - 1 WHERE yv.videoUrl = :videoUrl")
     void decrementPlaylistCount(@Param("videoUrl") String videoUrl);
 
-    @Query("SELECT YoutubeVideo yv ORDER BY yv.streamCount DESC")
+    @Query("SELECT yv FROM YoutubeVideo yv ORDER BY yv.streamCount DESC")
     List<YoutubeVideo> getTopStreams(Pageable pageable);
 
-    @Query("SELECT YoutubeVideo yv ORDER BY yv.playlistCount DESC")
+    @Query("SELECT yv FROM YoutubeVideo yv ORDER BY yv.playlistCount DESC")
     List<YoutubeVideo> getTopStarredTracks(Pageable pageable);
 
 }
