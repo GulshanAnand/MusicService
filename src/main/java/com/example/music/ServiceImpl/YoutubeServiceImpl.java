@@ -106,23 +106,11 @@ public class YoutubeServiceImpl implements YoutubeService {
 
     @Override
     public List<List<YoutubeVideoDto>> getCharts() {
-        Integer lim = 10;
-        Pageable pageable = PageRequest.of(0, lim);
-        List<YoutubeVideoDto> topStreams = youtubeVideoRepository.getTopStreams(pageable)
-                .stream()
-                .map(YoutubeVideoAdapter::convertToDto)
-                .toList();
-        List<YoutubeVideoDto> topStarredTracks = youtubeVideoRepository.getTopStarredTracks(pageable)
-                .stream()
-                .map(YoutubeVideoAdapter::convertToDto)
-                .toList();
-
-        List<List<YoutubeVideoDto>> x = Stream.of(
+        Pageable pageable = PageRequest.of(0, 10);
+        return Stream.of(
                 youtubeVideoRepository.getTopStreams(pageable),
                 youtubeVideoRepository.getTopStarredTracks(pageable)
         ).map(list -> list.stream().map(YoutubeVideoAdapter::convertToDto).toList()).toList();
-
-        return x;
     }
 
 }
