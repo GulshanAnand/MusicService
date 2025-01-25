@@ -3,6 +3,7 @@ package com.example.music.ServiceImpl;
 import com.example.music.Objects.YoutubeApiResponse;
 import com.example.music.Objects.Item;
 import com.example.music.Services.YoutubeService;
+import com.example.music.adapters.YoutubeVideoAdapter;
 import com.example.music.entity.User;
 import com.example.music.utils.UserContextHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.springframework.context.annotation.PropertySource;
 
 @Service
@@ -101,7 +104,22 @@ public class YoutubeServiceImpl implements YoutubeService {
 
     @Override
     public List<List<YoutubeVideoDto>> getCharts() {
-        return List.of();
+        Integer lim = 10;
+        List<YoutubeVideoDto> topStreams = youtubeVideoRepository.getTopStreams(lim)
+                .stream()
+                .map(YoutubeVideoAdapter::convertToDto)
+                .toList();
+        List<YoutubeVideoDto> topStarredTracks = youtubeVideoRepository.getTopStarredTracks(lim)
+                .stream()
+                .map(YoutubeVideoAdapter::convertToDto)
+                .toList();
+
+        List<List<YoutubeVideoDto>> x = Stream.of(
+                youtubeVideoRepository.getTopStreams(lim),
+                youtubeVideoRepository.getTopStarredTracks(lim)
+        ).map(list -> list.stream().map(YoutubeVideoAdapter::convertToDto).toList()).toList();
+
+        return x;
     }
 
 }

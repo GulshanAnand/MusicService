@@ -41,7 +41,7 @@ public class MusicController {
         return ResponseEntity.status(HttpStatus.OK).body(videos);
     }
 
-    @GetMapping("/search/{trackName}")
+    @GetMapping("/top-tracks")
     public ResponseEntity<List<List<YoutubeVideoDto>>> getCharts(){
         List<List<YoutubeVideoDto>> videos = youtubeService.getCharts();
         return ResponseEntity.status(HttpStatus.OK).body(videos);
