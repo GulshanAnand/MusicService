@@ -4,18 +4,19 @@ import com.example.music.Objects.YoutubeApiResponse;
 import com.example.music.Objects.Item;
 import com.example.music.Services.YoutubeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import com.example.music.entity.YoutubeVideo;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.music.dto.YoutubeVideoDto;
 import com.example.music.repository.YoutubeVideoRepository;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.Optional;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -77,9 +78,87 @@ public class YoutubeServiceImpl implements YoutubeService {
             double durationInSeconds = duration / 1_000_000.0;
             System.out.println("yt-dlp execution time: " + durationInSeconds + " milliseconds");
 
+            Optional<YoutubeVideo> existingYoutubeVideo = youtubeVideoRepository.findByVideoUrl(videoUrl);
+            if(existingYoutubeVideo.isEmpty()){
+                System.out.println("empty");
+                youtubeVideoRepository.save(YoutubeVideo.builder()
+                        .videoUrl(videoUrl)
+                        .title(title)
+                        .streamCount(1)
+                        .playlistCount(0)
+                        .build());
+            }
+            else{
+                System.out.println("increased");
+                youtubeVideoRepository.incrementStreamCount(videoUrl);
+            }
+
 
             return resource;
-        } catch (IOException ex) {
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public void streamAudio(HttpServletResponse response, String videoUrl, String title) {
+        try {
+
+//            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=audio.mp3");
+//            response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+            response.setContentType("audio/mpeg");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"audio-file.mp3\"");
+
+            String command = String.format("yt-dlp -x --audio-format mp3 -o - %s", videoUrl);
+
+            System.out.println(command);
+            long startTime = System.nanoTime();
+
+            ProcessBuilder processBuilder = new ProcessBuilder();
+            processBuilder.command(command);
+            Process process = processBuilder.start();
+
+            try (InputStream processOutput = process.getInputStream();
+                 OutputStream responseOutput = response.getOutputStream()) {
+
+                // Stream the process output to the HTTP response
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = processOutput.read(buffer)) != -1) {
+                    responseOutput.write(buffer, 0, bytesRead);
+                    responseOutput.flush(); // Ensure partial data is sent to the client
+                }
+            }
+
+            // Wait for the process to complete
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                System.err.println("Command failed with exit code: " + exitCode);
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+
+            long endTime = System.nanoTime();
+            long duration = endTime - startTime;
+            double durationInSeconds = duration / 1_000_000.0;
+            System.out.println("yt-dlp execution time: " + durationInSeconds + " milliseconds");
+
+//            Optional<YoutubeVideo> existingYoutubeVideo = youtubeVideoRepository.findByVideoUrl(videoUrl);
+//            if(existingYoutubeVideo.isEmpty()){
+//                System.out.println("empty");
+//                youtubeVideoRepository.save(YoutubeVideo.builder()
+//                        .videoUrl(videoUrl)
+//                        .title(title)
+//                        .streamCount(1)
+//                        .playlistCount(0)
+//                        .build());
+//            }
+//            else{
+//                System.out.println("increased");
+//                youtubeVideoRepository.incrementStreamCount(videoUrl);
+//            }
+
+
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }

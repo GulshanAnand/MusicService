@@ -3,6 +3,7 @@ package com.example.music.Controllers;
 import com.example.music.Services.PlaylistService;
 import com.example.music.entity.YoutubeVideo;
 import com.example.music.Services.YoutubeService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
@@ -54,6 +55,16 @@ public class MusicController {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(audioStream);
 
+    }
+
+    @PostMapping("/stream")
+    public void streamTrack(HttpServletResponse response, @RequestBody YoutubeVideoDto youtubeVideoDto){
+        long startTime = System.nanoTime();
+        youtubeService.streamAudio(response, youtubeVideoDto.getVideoUrl(), youtubeVideoDto.getTitle());
+        long endTime = System.nanoTime();
+        long duration = endTime - startTime;
+        double durationInSeconds = duration / 1_000_000.0;
+        System.out.println("total stream execution time: " + durationInSeconds + " milliseconds");
     }
 
     @PostMapping("/playlist")
