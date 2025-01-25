@@ -9,6 +9,8 @@ import com.example.music.utils.UserContextHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.example.music.entity.YoutubeVideo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,18 +107,19 @@ public class YoutubeServiceImpl implements YoutubeService {
     @Override
     public List<List<YoutubeVideoDto>> getCharts() {
         Integer lim = 10;
-        List<YoutubeVideoDto> topStreams = youtubeVideoRepository.getTopStreams(lim)
+        Pageable pageable = PageRequest.of(0, lim);
+        List<YoutubeVideoDto> topStreams = youtubeVideoRepository.getTopStreams(pageable)
                 .stream()
                 .map(YoutubeVideoAdapter::convertToDto)
                 .toList();
-        List<YoutubeVideoDto> topStarredTracks = youtubeVideoRepository.getTopStarredTracks(lim)
+        List<YoutubeVideoDto> topStarredTracks = youtubeVideoRepository.getTopStarredTracks(pageable)
                 .stream()
                 .map(YoutubeVideoAdapter::convertToDto)
                 .toList();
 
         List<List<YoutubeVideoDto>> x = Stream.of(
-                youtubeVideoRepository.getTopStreams(lim),
-                youtubeVideoRepository.getTopStarredTracks(lim)
+                youtubeVideoRepository.getTopStreams(pageable),
+                youtubeVideoRepository.getTopStarredTracks(pageable)
         ).map(list -> list.stream().map(YoutubeVideoAdapter::convertToDto).toList()).toList();
 
         return x;
