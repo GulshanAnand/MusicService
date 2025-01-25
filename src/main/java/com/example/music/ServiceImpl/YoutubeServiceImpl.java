@@ -3,10 +3,15 @@ package com.example.music.ServiceImpl;
 import com.example.music.Objects.YoutubeApiResponse;
 import com.example.music.Objects.Item;
 import com.example.music.Services.YoutubeService;
+import com.example.music.adapters.YoutubeVideoAdapter;
+import com.example.music.entity.User;
+import com.example.music.utils.UserContextHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -21,7 +26,10 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.springframework.context.annotation.PropertySource;
 
 @Service
@@ -78,21 +86,18 @@ public class YoutubeServiceImpl implements YoutubeService {
             double durationInSeconds = duration / 1_000_000.0;
             System.out.println("yt-dlp execution time: " + durationInSeconds + " milliseconds");
 
-            Optional<YoutubeVideo> existingYoutubeVideo = youtubeVideoRepository.findByVideoUrl(videoUrl);
-            if(existingYoutubeVideo.isEmpty()){
-                System.out.println("empty");
+            Optional<YoutubeVideo> youtubeVideo = youtubeVideoRepository.findByVideoUrl(videoUrl);
+            if(youtubeVideo.isEmpty()){
                 youtubeVideoRepository.save(YoutubeVideo.builder()
                         .videoUrl(videoUrl)
                         .title(title)
-                        .streamCount(1)
                         .playlistCount(0)
+                        .streamCount(1)
                         .build());
             }
             else{
-                System.out.println("increased");
                 youtubeVideoRepository.incrementStreamCount(videoUrl);
             }
-
 
             return resource;
         } catch (Exception ex) {
@@ -161,6 +166,15 @@ public class YoutubeServiceImpl implements YoutubeService {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    @Override
+    public List<List<YoutubeVideoDto>> getCharts() {
+        Pageable pageable = PageRequest.of(0, 10);
+        return Stream.of(
+                youtubeVideoRepository.getTopStreams(pageable),
+                youtubeVideoRepository.getTopStarredTracks(pageable)
+        ).map(list -> list.stream().map(YoutubeVideoAdapter::convertToDto).toList()).toList();
     }
 
 }

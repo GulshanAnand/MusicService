@@ -42,6 +42,12 @@ public class MusicController {
         return ResponseEntity.status(HttpStatus.OK).body(videos);
     }
 
+    @GetMapping("/top-tracks")
+    public ResponseEntity<List<List<YoutubeVideoDto>>> getCharts(){
+        List<List<YoutubeVideoDto>> videos = youtubeService.getCharts();
+        return ResponseEntity.status(HttpStatus.OK).body(videos);
+    }
+
     @PostMapping("/download")
     public ResponseEntity<InputStreamResource> downloadTrackOriginal(@RequestBody YoutubeVideoDto youtubeVideoDto){
         long startTime = System.nanoTime();
