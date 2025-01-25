@@ -11,4 +11,5 @@ public interface YoutubeService {
 
     public InputStreamResource streamAudio(String videoUrl, String title) ;
 
+    List<List<YoutubeVideoDto>> getCharts();
 }

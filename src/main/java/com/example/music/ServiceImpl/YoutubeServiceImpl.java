@@ -3,6 +3,8 @@ package com.example.music.ServiceImpl;
 import com.example.music.Objects.YoutubeApiResponse;
 import com.example.music.Objects.Item;
 import com.example.music.Services.YoutubeService;
+import com.example.music.entity.User;
+import com.example.music.utils.UserContextHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -20,6 +22,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.context.annotation.PropertySource;
 
@@ -77,11 +80,28 @@ public class YoutubeServiceImpl implements YoutubeService {
             double durationInSeconds = duration / 1_000_000.0;
             System.out.println("yt-dlp execution time: " + durationInSeconds + " milliseconds");
 
+            Optional<YoutubeVideo> youtubeVideo = youtubeVideoRepository.findByVideoUrl(videoUrl);
+            if(youtubeVideo.isEmpty()){
+                youtubeVideoRepository.save(YoutubeVideo.builder()
+                        .videoUrl(videoUrl)
+                        .title(title)
+                        .playlistCount(0)
+                        .streamCount(1)
+                        .build());
+            }
+            else{
+                youtubeVideoRepository.incrementStreamCount(videoUrl);
+            }
 
             return resource;
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    @Override
+    public List<List<YoutubeVideoDto>> getCharts() {
+        return List.of();
     }
 
 }
