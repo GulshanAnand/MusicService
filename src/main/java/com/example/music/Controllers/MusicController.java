@@ -57,10 +57,10 @@ public class MusicController {
 
     }
 
-    @GetMapping("/stream")
-    public void streamTrack(@RequestParam("code") String code, HttpServletResponse response){
+    @PostMapping("/stream")
+    public void streamTrack(HttpServletResponse response, @RequestBody YoutubeVideoDto youtubeVideoDto){
         long startTime = System.nanoTime();
-        youtubeService.streamAudio(response, code);
+        youtubeService.streamAudio(response, youtubeVideoDto.getVideoUrl(), youtubeVideoDto.getTitle());
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
         double durationInSeconds = duration / 1_000_000.0;

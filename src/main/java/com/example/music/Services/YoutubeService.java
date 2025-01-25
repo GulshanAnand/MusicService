@@ -12,6 +12,6 @@ public interface YoutubeService {
 
     public InputStreamResource streamAudio(String videoUrl, String title) ;
 
-    void streamAudio(HttpServletResponse response, String code);
+    void streamAudio(HttpServletResponse response, String videoUrl, String title);
 
 }

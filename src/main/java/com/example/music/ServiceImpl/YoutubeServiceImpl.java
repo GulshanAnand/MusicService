@@ -100,7 +100,7 @@ public class YoutubeServiceImpl implements YoutubeService {
         }
     }
 
-    public void streamAudio(HttpServletResponse response, String code) {
+    public void streamAudio(HttpServletResponse response, String videoUrl, String title) {
         try {
 
 //            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=audio.mp3");
@@ -109,7 +109,6 @@ public class YoutubeServiceImpl implements YoutubeService {
             response.setContentType("audio/mpeg");
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"audio-file.mp3\"");
 
-            String videoUrl = "https://www.youtube.com/watch?v=" + code;
             String command = String.format("yt-dlp -x --audio-format mp3 -o - %s", videoUrl);
 
             System.out.println(command);
