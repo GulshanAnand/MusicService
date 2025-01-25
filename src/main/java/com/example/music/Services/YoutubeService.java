@@ -1,6 +1,7 @@
 package com.example.music.Services;
 
 import com.example.music.dto.YoutubeVideoDto;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.io.InputStreamResource;
 
 import java.util.List;
@@ -12,4 +13,7 @@ public interface YoutubeService {
     public InputStreamResource streamAudio(String videoUrl, String title) ;
 
     List<List<YoutubeVideoDto>> getCharts();
+
+    void streamAudio(HttpServletResponse response, String videoUrl, String title);
+
 }
